@@ -12,7 +12,12 @@ public class MandelbrotVisualizer {
         gui.show();
 
         // start with sequential rendering
-        RenderEngine sequential = new SequentialEngine(WIDTH, HEIGHT, 100);
+        RenderEngine sequential = new SequentialEngine(
+            WIDTH,
+            HEIGHT,
+            100,
+            2
+        );
         canvas.setRenderEngine(sequential);    
 
         // start with basic high-level positioning
