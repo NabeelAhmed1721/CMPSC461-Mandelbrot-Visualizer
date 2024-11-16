@@ -15,7 +15,7 @@ public class MandelbrotVisualizer {
         RenderEngine sequential = new SequentialEngine(
             WIDTH,
             HEIGHT,
-            100,
+            200,
             2
         );
         canvas.setRenderEngine(sequential);    

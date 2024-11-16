@@ -1,5 +1,4 @@
-import java.awt.Color;
-    import java.awt.Dimension;
+import java.awt.Dimension;
     import java.awt.Graphics;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
@@ -40,13 +39,14 @@ import java.awt.Color;
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
+            ColorScheme colorScheme = new ColorScheme(0, renderEngine.maxIterations);
+
             // TODO: find a more performant way to do this
             if (pixelBuffer != null) {
                 for (int x = 0; x < pixelBuffer.length; x++) {
                     for (int y = 0; y < pixelBuffer[x].length; y++) {
                         // TODO: find a proper color scheme
-                        int colorValue = pixelBuffer[x][y] % 256;
-                        g.setColor(new Color(colorValue, colorValue, colorValue));
+                        g.setColor(colorScheme.mapValueToColor(pixelBuffer[x][y]));
                         g.fillRect(x, y, 1, 1);
                     }
                 }                
