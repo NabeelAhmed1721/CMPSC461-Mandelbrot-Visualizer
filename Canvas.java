@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -128,6 +129,14 @@ public class Canvas extends JPanel implements ActionListener {
                 }
             }                
         }
+
+        // display frame time in the top right corner
+        long executionTime = this.renderEngine.getFrameExecutionTime();
+        int frameRate = Math.round(1000 / executionTime);
+        g.setColor(Color.WHITE);
+        g.drawString("Frame Rate: " + frameRate + " FPS", 10, 20);
+        g.drawString("Frame Time: " + executionTime + "ms", 10, 35);
+        g.drawString("Render Engine: " + renderEngine.getClass().getName(), 10, 50);
     }
 
     @Override
