@@ -1,8 +1,8 @@
 public class ParallelEngine extends RenderEngine {
     private long frameExecutionTime;
 
-    public ParallelEngine(int width, int height, int maxIterations) {
-        super(width, height, maxIterations);
+    public ParallelEngine(int width, int height, int maxIterations, float boundary, float resolutionScale) {
+        super(width, height, maxIterations, boundary, resolutionScale);
     }
 
     @Override
