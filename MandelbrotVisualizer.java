@@ -18,36 +18,33 @@ public class MandelbrotVisualizer {
     public static void main(String[] args) {
         
         GUI gui = new GUI(WIDTH, HEIGHT, "Mandelbrot Visualizer");
-        // TODO: have canvas automatically resize to fit the window, intead of passing in width and height
-        Canvas canvas = new Canvas(WIDTH, HEIGHT);
+        Canvas canvas = new Canvas(WIDTH, HEIGHT); // TODO: have canvas automatically resize to fit the window, intead of passing in width and height
 
-        // start with sequential rendering
-        RenderEngine sequential = new SequentialEngine(
-            WIDTH,
-            HEIGHT,
-            200, // iteration (lower = higher performance but can't "dive" as deeply into fractal)
-            2.0f, // bounds (lower = higher performance but less detailed fractal)
-            1f // resolution scale (lower = higher performance)
-        );
-
-        canvas.setRenderEngine(sequential);    
-
-        // WORK IN PROGRESS (DOES NOT WORK RIGHT NOW ☹️):
-        // RenderEngine parallel = new ParallelEngine(
+        // sequential rendering
+        // canvas.setRenderEngine(new SequentialEngine(
         //     WIDTH,
         //     HEIGHT,
-        //     500, // iteration
-        //     2.0f, // bounds
-        //     1f, // resolution scale
-        //     64 // number of threads
-        // );
+        //     2500, // iteration (lower = higher performance but can't "dive" as deeply into fractal)
+        //     2f, // bounds (lower = higher performance but less detailed fractal)
+        //     1f // resolution scale (lower = higher performance)
+        // ));    
 
-        // canvas.setRenderEngine(parallel);    
+        // multithreaded rendering
+        canvas.setRenderEngine(new ParallelEngine(
+            WIDTH,
+            HEIGHT,
+            7500, // iteration
+            2.0f, // bounds
+            1f, // resolution scale
+            11 // number of threads
+        ));    
 
-        // "starting" position. These values are best to get a good overview of the fractal
-        // these values shift as you zoom/pan the screen
-        canvas.setPlane(-2.0f, 1.0f, -1.0f, 1.0f);
+        // "starting" position. These values are best to get a good overview of the fractal these values shift as you zoom/pan the screen
+        // canvas.setPlane(-2.0f, 1.0f, -1.0f, 1.0f);
 
+        // SPECIAL COORDS
+        // Vortex
+        canvas.setPlane(-0.6847020228775615f, -0.6847017318389533f, -0.2995489513767755f, -0.29954880585747146f);
         // initial render
         canvas.render();
 
