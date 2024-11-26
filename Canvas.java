@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -13,7 +15,7 @@ import javax.swing.JPanel;
 public class Canvas extends JPanel implements ActionListener {
     private int[][] pixelBuffer;
     private RenderEngine renderEngine;
-    private float xMin, xMax, yMin, yMax;
+    private double xMin, xMax, yMin, yMax;
     private Point lastDragPoint;
     private boolean isDragging = false;
 
@@ -21,7 +23,7 @@ public class Canvas extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(width, height));
         
         // Mouse click events to help with dragging state
-        addMouseListener(new MouseAdapter() {
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 lastDragPoint = e.getPoint();
@@ -35,7 +37,7 @@ public class Canvas extends JPanel implements ActionListener {
         });
         
         // click to drag and pan the plane
-        addMouseMotionListener(new MouseMotionAdapter() {
+        this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isDragging && lastDragPoint != null) {
@@ -46,10 +48,10 @@ public class Canvas extends JPanel implements ActionListener {
                     float dy = currentPoint.y - lastDragPoint.y;
                     
                     // convert to screen distance
-                    float xRange = xMax - xMin;
-                    float yRange = yMax - yMin;
-                    float xOffset = -(dx / getWidth()) * xRange;
-                    float yOffset = -(dy / getHeight()) * yRange;
+                    double xRange = xMax - xMin;
+                    double yRange = yMax - yMin;
+                    double xOffset = -(dx / getWidth()) * xRange;
+                    double yOffset = -(dy / getHeight()) * yRange;
                     
                     // update the plane coordinates
                     xMin += xOffset;
@@ -73,14 +75,14 @@ public class Canvas extends JPanel implements ActionListener {
             float mouseXRatio = (float) e.getX() / getWidth();
             float mouseYRatio = (float) e.getY() / getHeight();
 
-            float rangeX = this.xMax - this.xMin;
-            float rangeY = this.yMax - this.yMin;
+            double rangeX = this.xMax - this.xMin;
+            double rangeY = this.yMax - this.yMin;
 
             float zoomFactor = rotation < 0 ? 0.8f : 1.25f;
 
             // New range based on zoom factor
-            float newRangeX = rangeX * zoomFactor;
-            float newRangeY = rangeY * zoomFactor;
+            double newRangeX = rangeX * zoomFactor;
+            double newRangeY = rangeY * zoomFactor;
 
             // Calculate new bounds with the mouse position as the zoom center
             this.xMin = this.xMin + mouseXRatio * (rangeX - newRangeX);
@@ -91,13 +93,28 @@ public class Canvas extends JPanel implements ActionListener {
             // Call render with updated bounds
             render();
         });
+
+        // if enter is pressed output plane values
+        setFocusable(true);
+        requestFocusInWindow();
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    System.out.println("xMin: " + xMin);
+                    System.out.println("xMax: " + xMax);
+                    System.out.println("yMin: " + yMin);
+                    System.out.println("yMax: " + yMax);
+                }
+            }
+        });
     }
 
     public void setRenderEngine(RenderEngine renderEngine) {
         this.renderEngine = renderEngine;
     }
 
-    public void setPlane(float xMin, float xMax, float yMin, float yMax) {
+    public void setPlane(double xMin, double xMax, double yMin, double yMax) {
         this.xMin = xMin;
         this.xMax = xMax;
         this.yMin = yMin;
@@ -137,6 +154,12 @@ public class Canvas extends JPanel implements ActionListener {
         g.drawString("Frame Rate: " + frameRate + " FPS", 10, 20);
         g.drawString("Frame Time: " + executionTime + "ms", 10, 35);
         g.drawString("Render Engine: " + renderEngine.getClass().getName(), 10, 50);
+        // display coordinates
+        g.setColor(Color.WHITE);
+        g.drawString("X Min: " + this.xMin, 10, 65);
+        g.drawString("X Max: " + this.xMax, 10, 80);
+        g.drawString("Y Min: " + this.yMin, 10, 95);
+        g.drawString("Y Max: " + this.yMax, 10, 110);
     }
 
     @Override
