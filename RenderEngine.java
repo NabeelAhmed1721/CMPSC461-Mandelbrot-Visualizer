@@ -30,4 +30,16 @@ public abstract class RenderEngine {
 
     // TODO: for measuring performance 
     public abstract long getFrameExecutionTime();
+
+    public int calculateIteration(Complex complex) {
+        Complex z = new Complex(0, 0);
+        int iteration = 0;
+        while (z.abs() < this.boundary && iteration < this.maxIterations) {
+            // z = z^2 + c
+            z = complex.add(z.power(2));
+            iteration++;
+        }
+        return iteration;
+    }
 }
+

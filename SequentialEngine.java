@@ -26,7 +26,7 @@ public class SequentialEngine extends RenderEngine {
                 double yPos = yMin + yStep * y;
                 Complex complex = new Complex(xPos, yPos);
                 // calculate fractal iteration for the given pixel position
-                int iteration = calculateIteration(complex);
+                int iteration = this.calculateIteration(complex);
 
                 // add iteration value to pixel buffer
                 // depending on resolution scale, copy value over onto pixel "block"
@@ -47,17 +47,6 @@ public class SequentialEngine extends RenderEngine {
     
         this.frameExecutionTime = System.currentTimeMillis() - startTime;
         return pixelBuffer;
-    }
-
-    private int calculateIteration(Complex complex) {
-        Complex z = new Complex(0, 0);
-        int iteration = 0;
-        while (z.abs() < this.boundary && iteration < this.maxIterations) {
-            // z = z^2 + c
-            z = complex.add(z.power(2));
-            iteration++;
-        }
-        return iteration;
     }
 
     @Override
