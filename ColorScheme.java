@@ -1,46 +1,96 @@
 import java.awt.Color;
 
 public class ColorScheme {
-    final private double minValue;
-    final private double maxValue;
+    final private double maxIterations;
     
-    public ColorScheme(double minValue, double maxValue) {
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+    // Color palette parameters
+    private static final int PALETTE_SIZE = 500;
+    private Color[] colorPalette;
+
+    public ColorScheme(int maxIterations) {
+        this.maxIterations = maxIterations;
+        generateColorPalette(getDefaultGradientColors());
     }
-    
-    public Color mapValueToColor(double value) {
-        // ensure value is within range
-        value = Math.max(this.minValue, Math.min(this.maxValue, value));
 
-        // gradient stops
-        Color stop1 = Color.BLACK; // black
-        Color stop2 = Color.RED; // some purple color
-        Color stop3 = Color.ORANGE; // reddish orange
-        Color stop4 = Color.BLACK; // bright yellow
+    private static Color[] getDefaultGradientColors() {
+        return new Color[] {
+            // some colors I got off the internet
+            new Color(0, 0, 0),
+            new Color(32, 0, 64),
+            new Color(64, 0, 128),
+            new Color(128, 0, 255),
+            new Color(255, 64, 0),
+            new Color(255, 255, 255)
+        };
+    }
 
-        // normalize value to range [0, 1]
-        double normalizedValue = (value - this.minValue) / (this.maxValue - this.minValue);
-
-        if (normalizedValue <= 0.33) {
-            // interpolate between stop1 and stop2
-            double t = normalizedValue / 0.33;
-            return interpolateColor(stop1, stop2, t);
-        } else if (normalizedValue <= 0.66) {
-            // interpolate between stop2 and stop3
-            double t = (normalizedValue - 0.33) / 0.33;
-            return interpolateColor(stop2, stop3, t);
-        } else {
-            // interpolate between stop3 and stop4
-            double t = (normalizedValue - 0.66) / 0.34;
-            return interpolateColor(stop3, stop4, t);
+    private void generateColorPalette(Color[] gradientColors) {
+        colorPalette = new Color[PALETTE_SIZE];
+        
+        // calculate segments for interpolation
+        int segmentSize = PALETTE_SIZE / (gradientColors.length - 1);
+        
+        for (int segment = 0; segment < gradientColors.length - 1; segment++) {
+            Color startColor = gradientColors[segment];
+            Color endColor = gradientColors[segment + 1];
+            
+            // fill the segment with interpolated colors
+            for (int i = 0; i < segmentSize; i++) {
+                double t = (double) i / segmentSize;
+                int paletteIndex = segment * segmentSize + i;
+                
+                if (paletteIndex < PALETTE_SIZE) {
+                    colorPalette[paletteIndex] = interpolateColor(startColor, endColor, t);
+                }
+            }
         }
+        
+        // ensure the last color is set (in case of rounding issues)
+        if (colorPalette[PALETTE_SIZE - 1] == null) {
+            colorPalette[PALETTE_SIZE - 1] = gradientColors[gradientColors.length - 1];
+        }
+    }
+
+    public Color mapValueToColor(double value) {
+        if (value >= maxIterations) {
+            return Color.BLACK;
+        }
+
+        // smooth iteration count
+        // CREDIT: https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set#Exponentially_mapped_and_cyclic_iterations
+        double log_zn = Math.log(value) / Math.log(2);
+        double nu = Math.log(log_zn / Math.log(2)) / Math.log(2);
+        double smoothIteration = value + 1 - nu;
+
+        // map to color palette
+        return getColorFromPalette(smoothIteration);
+    }
+
+    private Color getColorFromPalette(double smoothIteration) {
+        // Normalize iteration to palette size
+        double normalizedIteration = smoothIteration % PALETTE_SIZE;
+        
+        // Integer and fractional parts
+        int index1 = (int) Math.floor(normalizedIteration);
+        int index2 = (index1 + 1) % PALETTE_SIZE;
+        double frac = normalizedIteration - Math.floor(normalizedIteration);
+
+        // Interpolate between two colors
+        return interpolateColor(
+            colorPalette[index1], 
+            colorPalette[index2], 
+            frac
+        );
     }
 
     private static Color interpolateColor(Color c1, Color c2, double t) {
         int r = (int) (c1.getRed() + t * (c2.getRed() - c1.getRed()));
         int g = (int) (c1.getGreen() + t * (c2.getGreen() - c1.getGreen()));
         int b = (int) (c1.getBlue() + t * (c2.getBlue() - c1.getBlue()));
-        return new Color(r, g, b);
+        return new Color(
+            Math.max(0, Math.min(255, r)),
+            Math.max(0, Math.min(255, g)), 
+            Math.max(0, Math.min(255, b))
+        );
     }
 }

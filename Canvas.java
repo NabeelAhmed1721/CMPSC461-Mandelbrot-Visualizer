@@ -134,7 +134,7 @@ public class Canvas extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        ColorScheme colorScheme = new ColorScheme(0, renderEngine.maxIterations);
+        ColorScheme colorScheme = new ColorScheme(renderEngine.maxIterations);
 
         // TODO: find a more performant way to do this (look into VolatileImage)
         if (pixelBuffer != null) {
