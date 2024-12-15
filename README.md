@@ -65,4 +65,18 @@ If your GPU does not support OpenCL, you can use the sequential or multithreaded
 
 ## Authors
 
-Developed by students of CMPSC 461 at Penn State University.
+- **Kevin Yaurincela**  
+  *Institution*: Penn State University  
+  *Email*: [kmy5294@psu.edu](mailto:kmy5294@psu.edu)
+
+- **Nabeel Ahmed**  
+  *Institution*: Penn State University  
+  *Email*: [nza5352@psu.edu](mailto:nza5352@psu.edu)
+
+- **Tim Lee**  
+  *Institution*: Penn State University  
+  *Email*: [txl5529@psu.edu](mailto:txl5529@psu.edu)
+
+- **Thomas Snyder**  
+  *Institution*: Penn State University  
+  *Email*: [tds5642@psu.edu](mailto:tds5642@psu.edu)
