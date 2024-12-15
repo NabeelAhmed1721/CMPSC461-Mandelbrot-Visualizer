@@ -1,11 +1,11 @@
 public class MandelbrotVisualizer {
     // 1080p - Ultra High Resolution
-    // static final int WIDTH = 1920;
-    // static final int HEIGHT = 1080;
+    static final int WIDTH = 1920;
+    static final int HEIGHT = 1080;
     
     // 720p - High Resolution
-    static final int WIDTH = 1280;
-    static final int HEIGHT = 720;
+    // static final int WIDTH = 1280;
+    // static final int HEIGHT = 720;
     
     // 480p - Medium Resolution
     // static final int WIDTH = 854;
@@ -30,13 +30,23 @@ public class MandelbrotVisualizer {
         // ));    
 
         // multithreaded rendering
-        canvas.setRenderEngine(new ParallelEngine(
+        // canvas.setRenderEngine(new ParallelEngine(
+        //     WIDTH,
+        //     HEIGHT,
+        //     20000, // iteration
+        //     2.0f, // bounds
+        //     0.75f, // resolution scale
+        //     6 // number of threads
+        // ));
+        
+        // gpu rendering
+        canvas.setRenderEngine(new ParallelEngineGPU(
             WIDTH,
             HEIGHT,
-            7500, // iteration
+            50000, // iteration
+	    // 5000,
             2.0f, // bounds
-            1f, // resolution scale
-            11 // number of threads
+            1.0f // resolution scale
         ));    
 
         // "starting" position. These values are best to get a good overview of the fractal these values shift as you zoom/pan the screen
@@ -44,7 +54,20 @@ public class MandelbrotVisualizer {
 
         // SPECIAL COORDS
         // Vortex
-        canvas.setPlane(-0.6847020228775615f, -0.6847017318389533f, -0.2995489513767755f, -0.29954880585747146f);
+        // canvas.setPlane(
+        //     -0.6847018852010041,
+        //     -0.6847018852009084,
+        //     -0.2995488788802855,
+        //     -0.2995488788802376
+        // );
+        // Circles
+        canvas.setPlane(
+            -0.7498839734911263,
+            -0.7498825524038125,
+            0.023017205749902025,
+            0.023017916293558927
+        );
+        
         // initial render
         canvas.render();
 

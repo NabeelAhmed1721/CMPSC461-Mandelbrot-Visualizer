@@ -10,18 +10,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel implements ActionListener {
-    private int[][] pixelBuffer;
+    final private BufferedImage imageBuffer;
     private RenderEngine renderEngine;
     private double xMin, xMax, yMin, yMax;
     private Point lastDragPoint;
     private boolean isDragging = false;
 
+
     public Canvas(int width, int height) {
         setPreferredSize(new Dimension(width, height));
         
+        imageBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
         // Mouse click events to help with dragging state
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -123,9 +127,18 @@ public class Canvas extends JPanel implements ActionListener {
 
     // TODO: abstract these values into more friendly variables
     public void render() {
-        pixelBuffer = this.renderEngine.computeMandelbrot(
+        int[][] pixelBuffer = this.renderEngine.computeMandelbrot(
             this.xMin, this.xMax, this.yMin, this.yMax
         );
+
+        // Draw pixelBuffer into imageBuffer
+        ColorScheme colorScheme = new ColorScheme(renderEngine.maxIterations);
+        for (int x = 0; x < pixelBuffer.length; x++) {
+            for (int y = 0; y < pixelBuffer[x].length; y++) {
+                imageBuffer.setRGB(x, y, colorScheme.mapValueToColor(pixelBuffer[x][y]).getRGB());
+            }
+        }
+
         // rerender the canvas after every frame
         repaint();
     }
@@ -134,17 +147,8 @@ public class Canvas extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        ColorScheme colorScheme = new ColorScheme(renderEngine.maxIterations);
-
-        // TODO: find a more performant way to do this (look into VolatileImage)
-        if (pixelBuffer != null) {
-            for (int x = 0; x < pixelBuffer.length; x++) {
-                for (int y = 0; y < pixelBuffer[x].length; y++) {
-                    // TODO: find a proper color scheme
-                    g.setColor(colorScheme.mapValueToColor(pixelBuffer[x][y]));
-                    g.fillRect(x, y, 1, 1);
-                }
-            }                
+        if (imageBuffer != null) {
+            g.drawImage(imageBuffer, 0, 0, this);
         }
 
         // display frame time in the top right corner
