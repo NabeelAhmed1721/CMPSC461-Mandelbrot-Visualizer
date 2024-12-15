@@ -1,5 +1,7 @@
 # Mandelbrot Visualizer 🖥️🎨🚀
 
+![mandelbrot_render (1)](https://github.com/user-attachments/assets/e7e89be5-14b3-4b1b-8d73-8d5f7e6b78ce)
+
 A Mandelbrot set visualizer written in Java for the CMPSC 461 class at Penn State University. This application allows users to explore the fascinating Mandelbrot set using three different rendering engines:
 
 1. **Sequential Rendering**
