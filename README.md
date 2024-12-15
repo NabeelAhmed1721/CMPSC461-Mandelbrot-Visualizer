@@ -1,4 +1,4 @@
-# Mandelbrot Visualizer 🖥️🎨🚀
+# Mandelbrot Visualizer
 
 ![mandelbrot_render (1)](https://github.com/user-attachments/assets/e7e89be5-14b3-4b1b-8d73-8d5f7e6b78ce)
 
